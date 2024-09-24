@@ -59,6 +59,93 @@ int main(void) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        float vertices[] = {
+            -0.5f, -0.5f, 0.0f, 
+            0.5f, -0.5f, 0.0f, 
+            0.0f, 0.5f, 0.0f
+        };
+
+        unsigned int VBO;
+        glGenBuffers(1, &VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        // Vertex shader. 
+        // Vertex Shader source code in the form of a C string. 
+        const char *vertexShaderSource = "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main() {\n"
+        "gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0)\n;"
+        "}\0";
+        // Create a shader object and reference it by an ID so that it can be dynamically compiled at its run time.
+        unsigned int vertexShader;
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        // Attach the shader code to the shader object and compile the shader. 
+        glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+        glCompileShader(vertexShader);
+
+        // Fragment shader. 
+        // Fragment shader source code in the form of a C string (makes the colour orange).
+        const char *fragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main() {\n"
+        "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
+        "}\0";
+        // Compiling the fragment shader, process similar to compiling the vertex shader.
+        unsigned int fragmentShader;
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+        glCompileShader(fragmentShader);
+
+        // Creating a shader programme object to link the shaders together. 
+        unsigned int shaderProgramme;
+        shaderProgramme = glCreateProgram();
+        // Attaching and Linking the shaders together. 
+        glAttachShader(shaderProgramme, vertexShader);
+        glAttachShader(shaderProgramme, fragmentShader);
+        glLinkProgram(shaderProgramme);
+
+        // Activate the programme.
+        glUseProgram(shaderProgramme);
+        // Delete the shader objects since they're no longer needed once linked to the programme object.
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
+        //Telling OpenGL how to interpret the vertex data. 
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        //Enable the vertex attribute:
+        // 0. Copy our vertices array in a buffer for OpenGL to use.
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        // 1. Then set the vertex attributes pointers.
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        // 2. Use our shader programme when we want to render an object. 
+        glUseProgram(shaderProgramme);
+        // 3. Now draw the object. 
+       // Some code goes here, I guess. 
+
+        // Generate VAO. 
+        unsigned int VAO;
+        glGenVertexArrays(1, &VAO);
+
+        // Initialisation code (done once unless your object frequently changes)
+        // 1. Bind Vertex Array Object.
+        glBindVertexArray(VAO);
+        // 2. Copy our vertices array in a buffer for OpenGL to use. 
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        //3. Then set our vertex attributes pointers. 
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        // Drawing code in the render loop. 
+        //4. Draw the object. 
+        glUseProgram(shaderProgramme);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
         // Check and call events and swap the buffers. 
         glfwSwapBuffers(window);
         glfwPollEvents();
