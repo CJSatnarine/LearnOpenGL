@@ -59,16 +59,27 @@ int main(void) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Making the rectangle. 
         float vertices[] = {
-            -0.5f, -0.5f, 0.0f, 
-            0.5f, -0.5f, 0.0f, 
-            0.0f, 0.5f, 0.0f
+             0.5f,  0.5f, 0.5f, // Top Right. 
+             0.5f, -0.5f, 0.0f, // Bottom Right. 
+            -0.5f, -0.5f, 0.0f, // Bottom Left. 
+            -0.5f,  0.5f, 0.0f  // Top Left. 
         };
 
-        unsigned int VBO;
+        unsigned int indices[] = {
+            0, 1, 3,    //First triangle.  
+            1, 2, 3     // Second triangle. 
+        };
+
+        // Vertex Buffer Object (VBO), Element Buffer Object (EBO). 
+        unsigned int VBO, EBO;
         glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
         // Vertex shader. 
         // Vertex Shader source code in the form of a C string. 
