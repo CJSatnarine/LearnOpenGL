@@ -9,6 +9,25 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
+// Global Variables. 
+const unsigned int screenWidth = 800;
+const unsigned int screenHeight = 600;
+
+// Shaders. 
+// Vertex Shader source code in the form of a C string. 
+const char *vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"void main() {\n"
+"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0)\n;"
+"}\0";
+
+// Fragment shader source code in the form of a C string (makes the colour orange).
+const char *fragmentShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main() {\n"
+"FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
+"}\0";
+
 int main(void) {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -17,7 +36,7 @@ int main(void) {
     // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     // Creation of window.
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", NULL, NULL);
 
     // If window isn't created.
     if (window == NULL) {
@@ -25,6 +44,7 @@ int main(void) {
         glfwTerminate();
         return -1;
     }
+
     // Make the context of the window the main context on the current thread. 
     glfwMakeContextCurrent(window);
 
@@ -34,21 +54,12 @@ int main(void) {
         return -1;
     }
 
-    /*
-    * Viewport
-    *
-    * Tells OpenGL the size of the rendering window so OpenGL knows
-    * how we want to display the data and coordinates with respect to
-    * the window. 
-    * 
-    * The first two paramaters set the location of the lower left corner
-    * of the window. 
-    * The last two parameters set the width and height of the window in pixels.  
-    */
-   glViewport(0, 0, 800, 600);
+
+    // Tells OpenGL the size of the rendering window. 
+    glViewport(0, 0, 800, 600);
 
     // Managing window resizing. 
-   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Window closing with the ESC key. 
     while (!glfwWindowShouldClose(window)) {
@@ -84,12 +95,7 @@ int main(void) {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
         // Vertex shader. 
-        // Vertex Shader source code in the form of a C string. 
-        const char *vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main() {\n"
-        "gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0)\n;"
-        "}\0";
+
         // Create a shader object and reference it by an ID so that it can be dynamically compiled at its run time.
         unsigned int vertexShader;
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -97,13 +103,6 @@ int main(void) {
         glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
         glCompileShader(vertexShader);
 
-        // Fragment shader. 
-        // Fragment shader source code in the form of a C string (makes the colour orange).
-        const char *fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main() {\n"
-        "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
-        "}\0";
         // Compiling the fragment shader, process similar to compiling the vertex shader.
         unsigned int fragmentShader;
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -137,7 +136,7 @@ int main(void) {
         // 2. Use our shader programme when we want to render an object. 
         glUseProgram(shaderProgramme);
         // 3. Now draw the object. 
-       // Some code goes here, I guess. 
+        // Some code goes here, I guess. 
 
         // Generate VAO. 
         unsigned int VAO;
@@ -174,17 +173,17 @@ int main(void) {
 
     // Clean up GLFW's resources that were allocated. 
     glfwTerminate();
-    return 0;
-}
-
-// Resizing function to deal with resizing the window. 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
-// Window closing with ESC key. 
-void processInput(GLFWwindow* window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
+        return 0;
     }
+
+    // Resizing function to deal with resizing the window. 
+    void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    }
+
+    // Window closing with ESC key. 
+    void processInput(GLFWwindow* window) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, true);
+        }
 }
