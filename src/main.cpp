@@ -70,12 +70,16 @@ int main(void) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Making the rectangle. 
+        // Making the two triangles. 
         float vertices[] = {
-             0.5f,  0.5f, 0.5f, // Top Right. 
-             0.5f, -0.5f, 0.0f, // Bottom Right. 
-            -0.5f, -0.5f, 0.0f, // Bottom Left. 
-            -0.5f,  0.5f, 0.0f  // Top Left. 
+            // First triangle. 
+            -0.9f, -0.5f, 0.0f,  // left 
+            -0.0f, -0.5f, 0.0f,  // right
+            -0.45f, 0.5f, 0.0f,  // top 
+            // Second triangle.
+            0.0f, -0.5f, 0.0f,  // left
+            0.9f, -0.5f, 0.0f,  // right
+            0.45f, 0.5f, 0.0f   // top 
         };
 
         unsigned int indices[] = {
@@ -156,9 +160,9 @@ int main(void) {
         //4. Draw the object. 
         glUseProgram(shaderProgramme);
         glBindVertexArray(VAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Check and call events and swap the buffers. 
         glfwSwapBuffers(window);
