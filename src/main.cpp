@@ -17,15 +17,18 @@ const unsigned int screenHeight = 600;
 // Vertex Shader source code in the form of a C string. 
 const char *vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"out vec4 vertexColour;\n"
 "void main() {\n"
-"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0)\n;"
+"gl_Position = vec4(aPos, 1.0);\n"
+"vertexColour = vec4(0.5, 0.0, 0.0, 1.0);\n"
 "}\0";
 
 // Fragment shader source code in the form of a C string (makes the colour orange).
 const char *fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
+"in vec4 vertexColour;\n"
 "void main() {\n"
-"FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
+"FragColor = vertexColour;;\n"
 "}\0";
 
 int main(void) {
