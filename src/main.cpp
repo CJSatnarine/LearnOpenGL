@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <iostream>
+#include <cmath>
 
 // Prototypes.
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -13,8 +14,7 @@ void processInput(GLFWwindow* window);
 const unsigned int screenWidth = 800;
 const unsigned int screenHeight = 600;
 
-// Shaders. 
-// Vertex Shader source code in the form of a C string. 
+// Shaders.  
 const char *vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "out vec4 vertexColour;\n"
@@ -23,12 +23,12 @@ const char *vertexShaderSource = "#version 330 core\n"
 "vertexColour = vec4(0.5, 0.0, 0.0, 1.0);\n"
 "}\0";
 
-// Fragment shader source code in the form of a C string (makes the colour orange).
+
 const char *fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
-"in vec4 vertexColour;\n"
+"uniform vec4 vertexColour;\n"
 "void main() {\n"
-"FragColor = vertexColour;;\n"
+"FragColor = ourColour;\n"
 "}\0";
 
 int main(void) {
@@ -36,7 +36,10 @@ int main(void) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    
+    #ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
 
     // Creation of window.
     GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", NULL, NULL);
@@ -47,15 +50,19 @@ int main(void) {
         glfwTerminate();
         return -1;
     }
-
-    // Make the context of the window the main context on the current thread. 
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Initialising GLAD. 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialise GLAD" << std::endl;
         return -1;
     }
+
+
+    // Build and Compile shader programmes. 
+    
+    // Vertex Shader. 
 
 
     // Tells OpenGL the size of the rendering window. 
@@ -79,15 +86,10 @@ int main(void) {
             -0.9f, -0.5f, 0.0f,  // left 
             -0.0f, -0.5f, 0.0f,  // right
             -0.45f, 0.5f, 0.0f,  // top 
-            // Second triangle.
-            0.0f, -0.5f, 0.0f,  // left
-            0.9f, -0.5f, 0.0f,  // right
-            0.45f, 0.5f, 0.0f   // top 
         };
 
         unsigned int indices[] = {
             0, 1, 3,    //First triangle.  
-            1, 2, 3     // Second triangle. 
         };
 
         // Vertex Buffer Object (VBO), Element Buffer Object (EBO). 
@@ -162,10 +164,15 @@ int main(void) {
         // Drawing code in the render loop. 
         //4. Draw the object. 
         glUseProgram(shaderProgramme);
+
+        float timeValue = glfwGetTime();
+        float greenValue = sin(timeValue) / 2.0f + 0.5f;
+        int vertexColourLocation = glGetUniformLocation(shaderProgramme, "ourColour");
+        glUniform4f(vertexColourLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
+
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // Check and call events and swap the buffers. 
         glfwSwapBuffers(window);
@@ -183,14 +190,14 @@ int main(void) {
         return 0;
     }
 
-    // Resizing function to deal with resizing the window. 
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-        glViewport(0, 0, width, height);
-    }
+// Resizing function to deal with resizing the window. 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
 
     // Window closing with ESC key. 
-    void processInput(GLFWwindow* window) {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, true);
-        }
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
 }
