@@ -7,6 +7,7 @@ const unsigned int WINDOW_HEIGHT = 600;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
+void renderingCommands();
 
 int main(void) {
   // Initialisation and configuration.
@@ -35,7 +36,13 @@ int main(void) {
 
   // Render loop.
   while (!glfwWindowShouldClose(window)) {
+    // Input.
     processInput(window);
+
+    // Rendering commands.
+    renderingCommands();
+
+    // Call events and swap buffers.
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
@@ -52,4 +59,10 @@ void processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
   }
+}
+
+// Rendering commands function.
+void renderingCommands() {
+  glClearColor(0.3f, 0.0f, 0.3f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
 }
