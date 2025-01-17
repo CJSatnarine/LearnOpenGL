@@ -6,6 +6,8 @@ find_package(OpenGL REQUIRED)
 
 add_executable(first_opengl_project
 src/main.cpp
+src/glad/glad.c 
+src/glad/glad.h 
 )
 
 target_link_libraries(first_opengl_project 
