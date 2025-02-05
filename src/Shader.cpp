@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include <sstream>
 
 using namespace std;
 
@@ -13,26 +14,29 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath) {
   vertexShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
   fragmentShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
 
-  try {
-    // Open files.
-    vertexShaderFile.open(vertexPath);
-    fragmentShaderFile.open(fragmentPath);
+    try {
+        // Open files. 
+        vertexShaderFile.open(vertexPath);
+        fragmentShaderFile.open(fragmentPath);
 
-    // Read the file's buffer contents into the streams.
-    stringstream vertexShaderStream, fragmentShaderStream;
-    vertexShaderStream << vertexShaderFile.rdbuf();
-    fragmentShaderStream << fragmentShaderFile.rdbuf();
+        stringstream vertexShaderStream;
+        stringstream fragmentShaderStream;
 
-    // Close the file handlers.
-    vertexShaderFile.close();
-    fragmentShaderFile.close();
+        // Read file's buffer contents into streams.
+        vertexShaderStream << vertexShaderFile.rdbuf();
+        fragmentShaderStream << fragmentShaderFile.rdbuf();
 
-    // Convert stream into string.
-    vertexCode = vertexShaderStream.str();
-    fragmentCode = fragmentShaderStream.str();
-  } catch (ifstream::failure &e) {
-    cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << endl;
-  }
+        // Close the file handlers. 
+        vertexShaderFile.close();
+        fragmentShaderFile.close();
+
+        // Convert the stream into string. 
+        vertexCode = vertexShaderStream.str();
+        fragmentCode = fragmentShaderStream.str();
+
+    } catch(std::ifstream::failure e) {
+        cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << endl;
+    }
 
   // Compile Shaders.
   const char *vertexShaderCode = vertexCode.c_str();

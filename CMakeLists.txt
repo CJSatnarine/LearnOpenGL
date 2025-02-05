@@ -11,8 +11,8 @@ add_executable(
     src/glad/glad.h
     src/Shader.h
     src/Shader.cpp
-    src/fragmentShader.frag.glsl
-    src/vertexShader.vert.glsl
+    src/fragmentShader.glsl
+    src/vertexShader.glsl
 )
 
 target_link_libraries(first_opengl_project glfw OpenGL::GL)
