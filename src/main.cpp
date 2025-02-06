@@ -44,13 +44,11 @@ int main(void) {
 
     // Vertex setup.
     LogInfo("Setting up vertex");
-    float vertices[] = {
-        // positions         // colors
-        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-        0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
-    };
-
+   float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.0f,  0.5f, 0.0f
+};  
     // Generates VAO and binds it.
     VertexArrayObject VAO;
     VAO.Bind();
