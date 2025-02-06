@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
+#include <cmath>
 #include <iostream>
 
 // Prototypes
@@ -67,11 +68,18 @@ int main(void) {
         processInput(window);
 
         // Rendering the background.
-        glClearColor(0.3f, 0.0f, 0.3f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Rendering the triangle.
         shader.Activate();
+
+        // Update the uniform colour. 
+        float timeValue = glfwGetTime();
+        float triangleWhiteValue = sin(timeValue) * 2.0f + 0.5f;
+        int vertexColourLocation = glGetUniformLocation(shader.ID, "uniformColour");
+        glUniform4f(vertexColourLocation, triangleWhiteValue, triangleWhiteValue, triangleWhiteValue, 1.0f);
+
         VAO.Bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
