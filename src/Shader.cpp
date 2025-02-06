@@ -79,7 +79,9 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath) {
     glDeleteShader(fragment);
 }
 
-void Shader::use() { glUseProgram(ID); }
+void Shader::Activate() { glUseProgram(ID); }
+
+void Shader::Delete() { glDeleteProgram(ID); }
 
 void Shader::setBool(const string &name, bool value) const {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);

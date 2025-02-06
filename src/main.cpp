@@ -1,4 +1,6 @@
 #include "Shader.h"
+#include "VertexArrayObject.h"
+#include "VertexBufferObject.h"
 #include "debug.h"
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -41,7 +43,7 @@ int main(void) {
     Shader shader("../src/vertexShader.glsl", "../src/fragmentShader.glsl");
 
     // Vertex setup.
-    LogInfo("Setting up vortex");
+    LogInfo("Setting up vertex");
     float vertices[] = {
         // positions         // colors
         0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
@@ -49,23 +51,17 @@ int main(void) {
         0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
     };
 
-    unsigned int vertexBufferObject;
-    unsigned int vertexArrayObject;
+    // Generates VAO and binds it.
+    VertexArrayObject VAO;
+    VAO.Bind();
 
-    glGenVertexArrays(1, &vertexArrayObject);
-    glGenBuffers(1, &vertexBufferObject);
+    // Generates VBO and links it to vertices.
+    VertexBufferObject VBO(vertices, sizeof(vertices));
+    VAO.LinkVBO(VBO, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Position Attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    // Colour attribute.
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // Unbind all to prevent accidentally modifying them.
+    VAO.Unbind();
+    VBO.Unbind();
 
     // Render loop.
     while (!glfwWindowShouldClose(window)) {
@@ -77,8 +73,8 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Rendering the triangle.
-        shader.use();
-        glBindVertexArray(vertexArrayObject);
+        shader.Activate();
+        VAO.Bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // Call events and swap buffers.
@@ -86,8 +82,11 @@ int main(void) {
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &vertexArrayObject);
-    glDeleteBuffers(1, &vertexBufferObject);
+    // Delete all the objects created.
+    VAO.Delete();
+    VBO.Delete();
+    shader.Delete();
+    glfwDestroyWindow(window);
 
     glfwTerminate();
     return 0;

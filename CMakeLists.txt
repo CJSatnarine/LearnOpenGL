@@ -15,6 +15,12 @@ add_executable(
     src/debug.h
     src/fragmentShader.glsl
     src/vertexShader.glsl
+    src/ElementBufferObject.h 
+    src/ElementBufferObject.cpp
+    src/VertexArrayObject.h 
+    src/VertexArrayObject.cpp
+    src/VertexBufferObject.h 
+    src/VertexBufferObject.cpp
 )
 
 target_link_libraries(first_opengl_project glfw OpenGL::GL)
