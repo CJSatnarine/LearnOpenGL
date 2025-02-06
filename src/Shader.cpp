@@ -1,5 +1,8 @@
 #include "Shader.h"
+#include <fstream>
+#include <ostream>
 #include <sstream>
+#include "debug.h"
 
 using namespace std;
 
@@ -16,26 +19,33 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath) {
 
     try {
         // Open files. 
-        vertexShaderFile.open(vertexPath);
-        fragmentShaderFile.open(fragmentPath);
+        LogInfo("Opening files.");
+        vertexShaderFile.open(vertexPath, ifstream::in);
+        LogInfo(vertexShaderFile.is_open() ? "true" : "false");
+        fragmentShaderFile.open(fragmentPath, ifstream::in);
 
         stringstream vertexShaderStream;
         stringstream fragmentShaderStream;
 
         // Read file's buffer contents into streams.
+        LogInfo("Reading file contents into streams.");
         vertexShaderStream << vertexShaderFile.rdbuf();
         fragmentShaderStream << fragmentShaderFile.rdbuf();
 
         // Close the file handlers. 
+        LogInfo("Closing file handles.");
         vertexShaderFile.close();
         fragmentShaderFile.close();
 
         // Convert the stream into string. 
+        LogInfo("Converting the stream into string.");
         vertexCode = vertexShaderStream.str();
         fragmentCode = fragmentShaderStream.str();
 
     } catch(std::ifstream::failure e) {
-        cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << endl;
+        cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ:\n"
+             << "what - " << e.what() << "\n"
+             << "code - " << e.code() << endl;
     }
 
   // Compile Shaders.

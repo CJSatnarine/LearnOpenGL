@@ -11,6 +11,8 @@ add_executable(
     src/glad/glad.h
     src/Shader.h
     src/Shader.cpp
+    src/debug.cpp
+    src/debug.h
     src/fragmentShader.glsl
     src/vertexShader.glsl
 )
