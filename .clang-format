@@ -1,0 +1,4 @@
+BasedOnStyle: LLVM   # Base style (you can choose Google, Mozilla, etc.)
+IndentWidth: 4       # Set the indentation width to 4 spaces
+TabWidth: 4          # Set the width of a tab character to 4 spaces
+UseTab: Never        # Use spaces instead of tabs
