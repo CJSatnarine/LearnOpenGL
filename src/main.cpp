@@ -45,20 +45,30 @@ int main(void) {
 
     // Vertex setup.
     LogInfo("Setting up vertex");
-   float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-};  
+    float vertices[] = {
+        // positions         // colors
+        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+        0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
+    };
     // Generates VAO and binds it.
     VertexArrayObject VAO;
     VAO.Bind();
 
     // Generates VBO and links it to vertices.
     VertexBufferObject VBO(vertices, sizeof(vertices));
-    VAO.LinkVBO(VBO, 0);
+    VBO.Bind();
 
-    // Unbind all to prevent accidentally modifying them.
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+                          (void *)0);
+    glEnableVertexAttribArray(0);
+
+    // Colour attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+                          (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
     VAO.Unbind();
     VBO.Unbind();
 
@@ -73,12 +83,6 @@ int main(void) {
 
         // Rendering the triangle.
         shader.Activate();
-
-        // Update the uniform colour. 
-        float timeValue = glfwGetTime();
-        float triangleWhiteValue = sin(timeValue) * 2.0f + 0.5f;
-        int vertexColourLocation = glGetUniformLocation(shader.ID, "uniformColour");
-        glUniform4f(vertexColourLocation, triangleWhiteValue, triangleWhiteValue, triangleWhiteValue, 1.0f);
 
         VAO.Bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
