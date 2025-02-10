@@ -21,6 +21,8 @@ add_executable(
     src/VertexArrayObject.cpp
     src/VertexBufferObject.h 
     src/VertexBufferObject.cpp
+    src/stb_image.h 
+    src/stb.cpp
 )
 
 target_link_libraries(first_opengl_project glfw OpenGL::GL)
