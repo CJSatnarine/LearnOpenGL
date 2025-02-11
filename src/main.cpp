@@ -1,11 +1,11 @@
-#include "ElementBufferObject.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "VertexArrayObject.h"
-#include "VertexBufferObject.h"
-#include "debug.h"
+#include "classes/ElementBufferObject.h"
+#include "classes/Shader.h"
+#include "classes/Texture.h"
+#include "classes/VertexArrayObject.h"
+#include "classes/VertexBufferObject.h"
+#include "classes/debug.h"
 #include "glad/glad.h"
-#include "stb_image.h"
+#include "stb/stb_image.h"
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
@@ -59,7 +59,7 @@ int main(void) {
 
     // Create shader.
     LogInfo("Creating Shaders");
-    Shader shader("../src/vertexShader.glsl", "../src/fragmentShader.glsl");
+    Shader shader("../src/shaders/vertexShader.glsl", "../src/shaders/fragmentShader.glsl");
 
     // Generates VAO and binds it.
     VertexArrayObject VAO;
@@ -89,7 +89,7 @@ int main(void) {
 
     // Texture stuff
     LogInfo("creating texture.");
-    Texture face("../src/texture.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA,
+    Texture face("../src/resources/texture.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA,
                  GL_UNSIGNED_BYTE);
     face.textureUnit(shader, "tex0", 0);
 

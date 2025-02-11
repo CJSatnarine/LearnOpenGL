@@ -2,7 +2,7 @@
 #define VERTEX_ARRAY_OBJECT_H
 
 #include "VertexBufferObject.h"
-#include "glad/glad.h"
+#include "../glad/glad.h"
 
 class VertexArrayObject {
   public:

@@ -2,8 +2,8 @@
 #define TEXTURE_CLASS_H
 
 #include "Shader.h"
-#include "glad/glad.h"
-#include "stb_image.h"
+#include "../glad/glad.h"
+#include "../stb/stb_image.h"
 
 class Texture {
   public:

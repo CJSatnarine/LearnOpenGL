@@ -5,4 +5,4 @@
 
 void LogInfo(const char *msg);
 
-#endif // !DEBUG_H
+#endif

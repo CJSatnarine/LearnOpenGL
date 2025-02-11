@@ -1,7 +1,7 @@
 #ifndef VERTEX_BUFFER_OBJECT
 #define VERTEX_BUFFER_OBJECT
 
-#include "glad/glad.h"
+#include "../glad/glad.h"
 
 class VertexBufferObject {
   public:

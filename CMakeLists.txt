@@ -9,23 +9,23 @@ add_executable(
     src/main.cpp
     src/glad/glad.c
     src/glad/glad.h
-    src/Shader.h
-    src/Shader.cpp
-    src/debug.cpp
-    src/debug.h
-    src/fragmentShader.glsl
-    src/vertexShader.glsl
-    src/ElementBufferObject.h 
-    src/ElementBufferObject.cpp
-    src/VertexArrayObject.h 
-    src/VertexArrayObject.cpp
-    src/VertexBufferObject.h 
-    src/VertexBufferObject.cpp
-    src/stb_image.h 
-    src/stb.cpp
-    src/Texture.h 
-    src/Texture.cpp
-    src/texture.png
+    src/classes/Shader.h
+    src/classes/Shader.cpp
+    src/classes/debug.cpp
+    src/classes/debug.h
+    src/shaders/fragmentShader.glsl
+    src/shaders/vertexShader.glsl
+    src/classes/ElementBufferObject.h 
+    src/classes/ElementBufferObject.cpp
+    src/classes/VertexArrayObject.h 
+    src/classes/VertexArrayObject.cpp
+    src/classes/VertexBufferObject.h 
+    src/classes/VertexBufferObject.cpp
+    src/stb/stb_image.h 
+    src/stb/stb.cpp
+    src/classes/Texture.h 
+    src/classes/Texture.cpp
+    src/resources/texture.png
 )
 
 target_link_libraries(first_opengl_project glfw OpenGL::GL)
