@@ -15,6 +15,9 @@ class VertexArrayObject {
     // Links a VBO to the VAO using a certain layout.
     void LinkVBO(VertexBufferObject &VBO, unsigned int layout);
 
+    // Links a VBO attribute to the VAO. 
+    void LinkAttrib(VertexBufferObject& VBO, unsigned int layout, unsigned int numComponents, GLenum type, GLsizeiptr stride, void* offset);
+
     // Bind the VAO.
     void Bind();
 
