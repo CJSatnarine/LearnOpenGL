@@ -1,9 +1,11 @@
+#include "ElementBufferObject.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "VertexArrayObject.h"
 #include "VertexBufferObject.h"
 #include "debug.h"
-#include "stb_image.h"
 #include "glad/glad.h"
+#include "stb_image.h"
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
@@ -15,6 +17,21 @@ void processInput(GLFWwindow *window);
 // Constants
 const unsigned int WINDOW_WIDTH = 800;
 const unsigned int WINDOW_HEIGHT = 600;
+
+// Vertices.
+float vertices[] = {
+    //     COORDINATES     /        COLORS      /   TexCoord  //
+    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // Lower left corner
+    -0.5f, 0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // Upper left corner
+    0.5f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // Upper right corner
+    0.5f,  -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f  // Lower right corner
+};
+
+// Indices.
+unsigned int indices[] = {
+    0, 2, 1, // upper triangle
+    0, 3, 2  // lower triangle
+};
 
 int main(void) {
     // Initialisation and configuration.
@@ -44,14 +61,6 @@ int main(void) {
     LogInfo("Creating Shaders");
     Shader shader("../src/vertexShader.glsl", "../src/fragmentShader.glsl");
 
-    // Vertex setup.
-    LogInfo("Setting up vertex");
-    float vertices[] = {
-        // positions         // colors
-        0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-        0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
-    };
     // Generates VAO and binds it.
     VertexArrayObject VAO;
     VAO.Bind();
@@ -60,18 +69,29 @@ int main(void) {
     VertexBufferObject VBO(vertices, sizeof(vertices));
     VBO.Bind();
 
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          (void *)0);
-    glEnableVertexAttribArray(0);
+    // Generates EBO and links it to indices.
+    ElementBufferObject EBO(indices, sizeof(indices));
+    EBO.Bind();
 
-    // Colour attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // Links VBO attributes to VAO.
+    VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, 8 * sizeof(float), (void *)0);
+    VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, 8 * sizeof(float),
+                   (void *)(3 * sizeof(float)));
+    VAO.LinkAttrib(VBO, 2, 2, GL_FLOAT, 8 * sizeof(float),
+                   (void *)(6 * sizeof(float)));
 
     VAO.Unbind();
     VBO.Unbind();
+    EBO.Unbind();
+
+    // Gets ID of uniform called "scale".
+    unsigned int uniformID = glGetUniformLocation(shader.ID, "scale");
+
+    // Texture stuff
+    LogInfo("creating texture.");
+    Texture face("../src/texture.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA,
+                 GL_UNSIGNED_BYTE);
+    face.textureUnit(shader, "tex0", 0);
 
     // Render loop.
     while (!glfwWindowShouldClose(window)) {
@@ -79,14 +99,19 @@ int main(void) {
         processInput(window);
 
         // Rendering the background.
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Rendering the triangle.
         shader.Activate();
 
+        // Assigns a value to the uniform. (Must be always done before
+        // activating.)
+        glUniform1f(uniformID, 0.5f);
+
+        face.Bind();
         VAO.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Call events and swap buffers.
         glfwSwapBuffers(window);
@@ -96,6 +121,8 @@ int main(void) {
     // Delete all the objects created.
     VAO.Delete();
     VBO.Delete();
+    EBO.Delete();
+    face.Delete();
     shader.Delete();
     glfwDestroyWindow(window);
 

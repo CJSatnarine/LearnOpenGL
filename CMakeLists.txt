@@ -23,6 +23,9 @@ add_executable(
     src/VertexBufferObject.cpp
     src/stb_image.h 
     src/stb.cpp
+    src/Texture.h 
+    src/Texture.cpp
+    src/texture.png
 )
 
 target_link_libraries(first_opengl_project glfw OpenGL::GL)
